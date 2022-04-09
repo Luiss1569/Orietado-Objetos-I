@@ -2,7 +2,7 @@ import random
 import time
 
 RANDOM_QUANTIDADE = 5000
-RANDOM_INICIO = 0
+RANDOM_INICIO = 1
 RANDOM_FIM = 20000
 
 
@@ -41,10 +41,9 @@ def bubbleSort(array):
 
 def randomArray(quantidade, inicio, fim):
     array = []
-    for i in range(0, quantidade):
+    for i in range(quantidade):
         array.append(random.randint(inicio, fim))
-    array2 = array.copy()
-    return [array, array2]
+    return [array, array.copy()]
                 
 def main():
     [array, arrayCopy] = randomArray(RANDOM_QUANTIDADE, RANDOM_INICIO, RANDOM_FIM)

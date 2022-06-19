@@ -85,7 +85,7 @@ class Conta:
             return False
 
         self.__transacoes.append(Transferencia(valor, data, senha, "D"))
-        contaFavorecido.adicionaTransf(valor, data, senha, None)
+        contaFavorecido.adicionaTransf(valor, data, '', None)
         
     def calculaSaldo(self):
         saldo = 0

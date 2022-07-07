@@ -85,7 +85,7 @@ class CtrlTurma():
             with open("turma.pickle", "rb") as f:
                 self.listaTurmas = pickle.load(f)
         
-    def salvaDisciplinas(self):
+    def salvaTurmas(self):
         if len(self.listaTurmas) != 0:
             with open("turma.pickle","wb") as f:
                 pickle.dump(self.listaTurmas, f)

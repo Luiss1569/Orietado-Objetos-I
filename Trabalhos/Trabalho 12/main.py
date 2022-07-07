@@ -78,8 +78,8 @@ class ControlePrincipal():
 
     def salvaDados(self):
         self.ctrlEstudante.salvaEstudantes()
-        #self.ctrlDisciplina.salvaDisciplinas()
-        #self.ctrlTurma.salvaTurmas()
+        self.ctrlDisciplina.salvaDisciplinas()
+        self.ctrlTurma.salvaTurmas()
         self.root.destroy()
 
 if __name__ == '__main__':

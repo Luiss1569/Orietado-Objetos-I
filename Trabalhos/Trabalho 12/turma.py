@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkinter import messagebox
 import estudante as est 
 import disciplina as disc
+import pickle
+import os.path
 
 class Turma:
 
@@ -75,10 +77,19 @@ class LimiteMostraTurmas():
 class CtrlTurma():       
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
-        self.listaTurmas = []
         self.listaAlunosTurma = []
-
         self.listaNroMatric = []
+        if not os.path.isfile("turma.pickle"):
+            self.listaTurmas =  []
+        else:
+            with open("turma.pickle", "rb") as f:
+                self.listaTurmas = pickle.load(f)
+        
+    def salvaDisciplinas(self):
+        if len(self.listaTurmas) != 0:
+            with open("turma.pickle","wb") as f:
+                pickle.dump(self.listaTurmas, f)
+    
 
     def insereTurmas(self):        
         self.listaAlunosTurma = []

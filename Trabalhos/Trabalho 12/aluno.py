@@ -32,7 +32,7 @@ class Historico:
         self.__historico.append(disciplinaCursada)
     
     def getHistorico(self):
-        return self.__historico
+        return sorted(self.__historico, key=lambda x: x.getAno())
     
     def getDisciplinas(self):
         disciplinas = []
@@ -232,7 +232,12 @@ class CtrlAluno():
         disciplinasNCursadas= []
         disciplinasCursadas =  alunoSel.getHistorico().getDisciplinas()
         for disciplina in disciplinas:
-            if disciplina not in disciplinasCursadas:
+            cursou = False
+            for disciplinaCursada in disciplinasCursadas:
+                if disciplina.getCodigo() == disciplinaCursada.getCodigo():
+                    cursou = True
+                    break
+            if not cursou:
                 disciplinasNCursadas.append(disciplina)
                 
         disciplinasCod = []        
@@ -271,11 +276,14 @@ class CtrlAluno():
             res += 'Carga horária pendente: ' + str(pendente) + '\n'
             for disciplinaCursada in aluno.getHistorico().getHistorico():
                 disciplina = disciplinaCursada.getDisciplina()
+                situacao = "Aprovado"
+                if int(disciplinaCursada.getNota()) < 6:
+                    situacao = "Reprovado"
                 res += '---------------------\n'
                 res += 'Disciplina: ' + disciplina.getNome() + '\n'
                 res += 'Código: ' + disciplina.getCodigo() + '\n'
                 res += 'Semestre: ' + str(disciplinaCursada.getSemestre()) + '\n'
-                res += 'Nota: ' + str(disciplinaCursada.getNota()) + '\n'
+                res += 'Situação: ' + str(situacao) + '\n'
                 res += 'Ano: ' + str(disciplinaCursada.getAno()) + '\n'
                 res += '---------------------\n'
             self.ctrlPrincipal.limite.mostraJanela('Aluno', res)

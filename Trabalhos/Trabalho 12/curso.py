@@ -175,11 +175,13 @@ class CtrlCurso():
     def getListaCodGrades(self):
         listaCod = []
         for curso in self.listaCursos:
-            listaCod.append(curso.getGrade().getAno())
+            cod = curso.getNome() + " - " + curso.getGrade().getAno()
+            listaCod.append(cod)
         return listaCod
     
     def addMateriaGrade(self, materia, gradeSel):
         for curso in self.listaCursos:
-            if curso.getGrade().getAno() == gradeSel:
+            cod = curso.getNome() + " - " + curso.getGrade().getAno()
+            if cod == gradeSel:
                 curso.getGrade().addDisciplina(materia)
                 break

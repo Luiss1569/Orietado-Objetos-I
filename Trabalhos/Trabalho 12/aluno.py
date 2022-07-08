@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 from tkinter import ttk
+import pickle
+import os.path
 
 class DisciplinaCursada:
     def __init__(self, disciplina, ano, semestre, nota):
@@ -64,10 +66,10 @@ class Aluno:
         cargaHorariaObrigatoria = 0
         carregaHorariaEletiva = 0
         for disciplina in self.__historico.getDisciplinas():
-            if disciplina in self.__curso.getDisciplinas():
-                cargaHorariaObrigatoria += disciplina.getCargaHoraria()
+            if self.__curso.eObrigatoria(disciplina):
+                cargaHorariaObrigatoria += int(disciplina.getCargaHoraria())
             else:
-                carregaHorariaEletiva += disciplina.getCargaHoraria()
+                carregaHorariaEletiva += int(disciplina.getCargaHoraria())
             
         return [cargaHorariaObrigatoria, carregaHorariaEletiva]
 
@@ -121,40 +123,40 @@ class LimiteInsereAlunoDisciplina(tk.Toplevel):
     def __init__(self, controle, listaDiscCod):
 
         tk.Toplevel.__init__(self)
-        self.geometry('250x100')
+        self.geometry('250x250')
         self.title("Estudante")
         self.controle = controle
 
         self.frameNota = tk.Frame(self)
-        self.frameNota.pack(side="left")
+        self.frameNota.pack()
         self.frameAno = tk.Frame(self)
-        self.frameAno.pack(side="left")
+        self.frameAno.pack()
         self.frameSemestre = tk.Frame(self)
-        self.frameSemestre.pack(side="left")
-        self.frameButton = tk.Frame(self)
-        self.frameButton.pack(side="left")
+        self.frameSemestre.pack()
         self.frameDiscip = tk.Frame(self)
-        self.frameDiscip.pack(side="left")
+        self.frameDiscip.pack()
+        self.frameButton = tk.Frame(self)
+        self.frameButton.pack()
       
         self.labelNota= tk.Label(self.frameNota,text="Nota:")
         self.labelAno = tk.Label(self.frameAno,text="Ano")
         self.labelSemestre = tk.Label(self.frameSemestre,text="Semestre")
-        self.labelAno.pack(side="left")
-        self.labelNota.pack(side="left")
-        self.labelSemestre.pack(side="left")
+        self.labelAno.pack()
+        self.labelNota.pack()
+        self.labelSemestre.pack()
 
         self.inputNota = tk.Entry(self.frameNota, width=20)
         self.inputNota.pack(side="left")
-        self.inputNome = tk.Entry(self.frameAno, width=20)
-        self.inputNome.pack(side="left")    
+        self.inputAno = tk.Entry(self.frameAno, width=20)
+        self.inputAno.pack(side="left")    
         self.inputSemestre = tk.Entry(self.frameSemestre, width=20)
         self.inputSemestre.pack(side="left")        
         
         self.labelDiscip = tk.Label(self.frameDiscip,text="Escolha o Disciplina: ")
-        self.labelDiscip.pack(side="left")
+        self.labelDiscip.pack()
         self.escolhaCombo = tk.StringVar()
-        self.combobox = tk.Combobox(self.frameDiscip, width = 15 , textvariable = self.escolhaCombo)
-        self.combobox.pack(side="left")
+        self.combobox = ttk.Combobox(self.frameDiscip, width = 15 , textvariable = self.escolhaCombo)
+        self.combobox.pack()
         self.combobox['values'] = listaDiscCod
       
         self.buttonSubmit = tk.Button(self.frameButton ,text="Enter")      
@@ -175,7 +177,16 @@ class LimiteMensagem():
 class CtrlAluno():       
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
-        self.listaAlunos = []
+        if not os.path.isfile("alunos.pickle"):
+            self.listaAlunos =  []
+        else:
+            with open("alunos.pickle", "rb") as f:
+                self.listaAlunos = pickle.load(f)
+                
+    def salvaDados(self):
+        if len(self.listaAlunos) != 0:
+            with open("alunos.pickle","wb") as f:
+                pickle.dump(self.listaAlunos, f)
 
     def insereAlunos(self):        
         self.listaAlunosTurma = []
@@ -199,10 +210,10 @@ class CtrlAluno():
         self.limiteIns.escolhaCombo.set('')
         
     def clearHandlerInsDisc(self, event):
-        self.limiteInsDisciplina.inputNro.delete(0, tk.END)
-        self.limiteInsDisciplina.inputNome.delete(0, tk.END)
-        self.limiteInsDisciplina.escolhaCombo.set('')
+        self.limiteInsDisciplina.inputNota.delete(0, tk.END)
+        self.limiteInsDisciplina.inputAno.delete(0, tk.END)
         self.limiteInsDisciplina.inputSemestre.delete(0, tk.END)
+        self.limiteInsDisciplina.escolhaCombo.set('')
         
     def cadastraDsciplinaCursada(self):
         matricula = simpledialog.askstring('Aluno', 'Digite o código do aluno: ')
@@ -233,10 +244,13 @@ class CtrlAluno():
     def insereDisciplinaHandler(self, event):   
             disciplinaCod = self.limiteInsDisciplina.escolhaCombo.get()
             disciplina = self.ctrlPrincipal.ctrlDisciplina.getDisciplina(disciplinaCod)
+            if disciplina is None:
+               self.ctrlPrincipal.limite.mostraJanela('Erro', 'Disciplina não encontrada')
+               return
             ano = self.limiteInsDisciplina.inputAno.get()
             semestre = self.limiteInsDisciplina.inputSemestre.get()
             nota = self.limiteInsDisciplina.inputNota.get()
-            self.alunoSel.getHistorico().addDisciplina(disciplina, ano, semestre, nota)
+            self.alunoSel.getHistorico().addMateria(disciplina, ano, semestre, nota)
             self.limiteInsDisciplina.mostraJanela('Sucesso', 'Disciplina cadastrada com sucesso')
             self.clearHandlerInsDisc(event)
             self.limiteInsDisciplina.destroy()
@@ -255,15 +269,15 @@ class CtrlAluno():
             obrigatoria, pendente = aluno.getCargaHoraria()
             res += 'Carga horária obrigatória: ' + str(obrigatoria) + '\n'
             res += 'Carga horária pendente: ' + str(pendente) + '\n'
-            for disciplinaCursada in aluno.getHistorico().getDisciplinas():
+            for disciplinaCursada in aluno.getHistorico().getHistorico():
                 disciplina = disciplinaCursada.getDisciplina()
-                res += '---------------------'
+                res += '---------------------\n'
                 res += 'Disciplina: ' + disciplina.getNome() + '\n'
                 res += 'Código: ' + disciplina.getCodigo() + '\n'
                 res += 'Semestre: ' + str(disciplinaCursada.getSemestre()) + '\n'
                 res += 'Nota: ' + str(disciplinaCursada.getNota()) + '\n'
                 res += 'Ano: ' + str(disciplinaCursada.getAno()) + '\n'
-                res += '---------------------'
+                res += '---------------------\n'
             self.ctrlPrincipal.limite.mostraJanela('Aluno', res)
         else:
             self.ctrlPrincipal.limite.mostraJanela('Erro', 'Aluno não encontrado')

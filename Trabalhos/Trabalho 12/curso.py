@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+import pickle
+import os.path
 
 class Grade:
     def __init__(self, ano, disciplinas):
@@ -28,7 +30,13 @@ class Curso:
         return self.__grade
     
     def getDisciplinas(self):
-        return self.__grade.getDisciplinas()    
+        return self.__grade.getDisciplinas()  
+    
+    def eObrigatoria(self, disciplina):
+        for d in self.__grade.getDisciplinas():
+            if d.getCodigo() == disciplina.getCodigo():
+                return True
+        return False
 
 class LimiteInsereCurso(tk.Toplevel):
     def __init__(self, controle, listaDisciplinasCod):
@@ -96,8 +104,17 @@ class LimiteMensagem():
 class CtrlCurso():       
     def __init__(self, controlePrincipal):
         self.ctrlPrincipal = controlePrincipal
-        self.listaCursos = []
         self.listaDisciplinas = []
+        if not os.path.isfile("cursos.pickle"):
+            self.listaCursos =  []
+        else:
+            with open("cursos.pickle", "rb") as f:
+                self.listaCursos = pickle.load(f)
+                
+    def salvaDados(self):
+        if len(self.listaCursos) != 0:
+            with open("cursos.pickle","wb") as f:
+                pickle.dump(self.listaCursos, f)
         
     def closeHandler(self, event):
         self.limiteIns.destroy()

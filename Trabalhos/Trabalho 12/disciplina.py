@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+import pickle
+import os.path
  
 class Disciplina:
     def __init__(self, codigo, nome, cargaHoraria):
@@ -81,6 +83,16 @@ class CtrlDisciplina():
         self.ctrlPrincipal = controlePrincipal
         self.listaCursos = []
         self.listaDisciplinas = []
+        if not os.path.isfile("discplinas.pickle"):
+            self.listaDisciplinas =  []
+        else:
+            with open("discplinas.pickle", "rb") as f:
+                self.listaDisciplinas = pickle.load(f)
+                
+    def salvaDados(self):
+        if len(self.listaDisciplinas) != 0:
+            with open("discplinas.pickle","wb") as f:
+                pickle.dump(self.listaDisciplinas, f)
 
     def insereDisciplina(self):        
         listGradesOption = self.ctrlPrincipal.ctrlCurso.getListaCodGrades()

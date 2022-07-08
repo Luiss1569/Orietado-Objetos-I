@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
-import estudante as est
-import disciplina as disc
-import turma as trm
+import aluno as al
+import curso as cr
+import disciplina as ds
 
 class LimitePrincipal():
     def __init__(self, root, controle):
@@ -10,31 +10,31 @@ class LimitePrincipal():
         self.root = root
         self.root.geometry('300x250')
         self.menubar = tk.Menu(self.root)        
-        self.estudanteMenu = tk.Menu(self.menubar)
-        self.discipMenu = tk.Menu(self.menubar)
-        self.turmaMenu = tk.Menu(self.menubar)
+        self.alunoMenu = tk.Menu(self.menubar)
+        self.cursoMenu = tk.Menu(self.menubar)
+        self.disciplinaMenu = tk.Menu(self.menubar)
         self.sairMenu = tk.Menu(self.menubar)    
 
-        self.estudanteMenu.add_command(label="Insere", \
-                    command=self.controle.insereEstudantes)
-        self.estudanteMenu.add_command(label="Mostra", \
-                    command=self.controle.mostraEstudantes)
-        self.menubar.add_cascade(label="Estudante", \
-                    menu=self.estudanteMenu)
+        self.alunoMenu.add_command(label="Criar", \
+                    command=self.controle.insereAlunos)
+        self.alunoMenu.add_command(label="Cadastrar Disciplina Cursada", \
+                    command=self.controle.cadastraDsciplinaCursada)
+        self.alunoMenu.add_command(label="Consultar", \
+            command=self.controle.consultarAluno)
+        self.menubar.add_cascade(label="Aluno", \
+                    menu=self.alunoMenu)
 
-        self.discipMenu.add_command(label="Insere", \
-                    command=self.controle.insereDisciplinas)
-        self.discipMenu.add_command(label="Mostra", \
-                    command=self.controle.mostraDisciplinas)        
+        self.cursoMenu.add_command(label="Criar", \
+                    command=self.controle.insereCurso)
+        self.cursoMenu.add_command(label="Consultar", \
+                    command=self.controle.consultarCurso)        
+        self.menubar.add_cascade(label="Curso", \
+                    menu=self.cursoMenu)
+
+        self.disciplinaMenu.add_command(label="Insere", \
+                    command=self.controle.insereDisciplina)                   
         self.menubar.add_cascade(label="Disciplina", \
-                    menu=self.discipMenu)
-
-        self.turmaMenu.add_command(label="Insere", \
-                    command=self.controle.insereTurmas)
-        self.turmaMenu.add_command(label="Mostra", \
-                    command=self.controle.mostraTurmas)                     
-        self.menubar.add_cascade(label="Turma", \
-                    menu=self.turmaMenu)        
+                    menu=self.disciplinaMenu)        
 
         self.sairMenu.add_command(label="Salva", \
                     command=self.controle.salvaDados)
@@ -42,44 +42,47 @@ class LimitePrincipal():
                     menu=self.sairMenu)
 
         self.root.config(menu=self.menubar)
+    
+    def mostraJanela(self, titulo, msg):
+        messagebox.showinfo(titulo, msg)
 
       
 class ControlePrincipal():       
     def __init__(self):
         self.root = tk.Tk()
 
-        self.ctrlEstudante = est.CtrlEstudante()
-        self.ctrlDisciplina = disc.CtrlDisciplina()
-        self.ctrlTurma = trm.CtrlTurma(self)
+        self.ctrlAluno = al.CtrlAluno(self)
+        self.ctrlDisciplina = ds.CtrlDisciplina(self)
+        self.ctrlCurso = cr.CtrlCurso(self)
 
         self.limite = LimitePrincipal(self.root, self) 
 
-        self.root.title("Exemplo MVC")
+        self.root.title("Trab 12")
         # Inicia o mainloop
         self.root.mainloop()
        
-    def insereEstudantes(self):
-        self.ctrlEstudante.insereEstudantes()
+    def insereAlunos(self):
+        self.ctrlAluno.insereAlunos()
 
-    def mostraEstudantes(self):
-        self.ctrlEstudante.mostraEstudantes()
+    def cadastraDsciplinaCursada(self):
+        self.ctrlAluno.cadastraDsciplinaCursada()
+        
+    def consultarAluno(self):
+        self.ctrlAluno.consultarAluno()
 
-    def insereDisciplinas(self):
-        self.ctrlDisciplina.insereDisciplinas()
+    def insereCurso(self):
+        self.ctrlCurso.insereCurso()
+        
+    def consultarCurso(self):
+        self.ctrlCurso.consultarCurso()
 
-    def mostraDisciplinas(self):
-        self.ctrlDisciplina.mostraDisciplinas()
-
-    def insereTurmas(self):
-        self.ctrlTurma.insereTurmas()
-
-    def mostraTurmas(self):
-        self.ctrlTurma.mostraTurmas()
+    def insereDisciplina(self):
+        self.ctrlDisciplina.insereDisciplina()
 
     def salvaDados(self):
-        self.ctrlEstudante.salvaEstudantes()
-        self.ctrlDisciplina.salvaDisciplinas()
-        self.ctrlTurma.salvaTurmas()
+        self.ctrlAluno.salvaDados()
+        self.ctrlCurso.salvaDados()
+        self.ctrlDisciplina.salvaDados()
         self.root.destroy()
 
 if __name__ == '__main__':

@@ -1,115 +1,118 @@
 import tkinter as tk
 from tkinter import messagebox
-import pickle
-import os.path
-
+from tkinter import ttk
+ 
 class Disciplina:
-
-    def __init__(self, codigo, nome):
+    def __init__(self, codigo, nome, cargaHoraria):
         self.__codigo = codigo
         self.__nome = nome
-
+        self.__cargaHoraria = cargaHoraria
+        
     def getCodigo(self):
         return self.__codigo
     
     def getNome(self):
         return self.__nome
-
-class LimiteInsereDisciplinas(tk.Toplevel):
-    def __init__(self, controle):
+    
+    def getCargaHoraria(self):
+        return self.__cargaHoraria
+    
+class LimiteInsereDisciplina(tk.Toplevel):
+    def __init__(self, controle, listGradesOption):
 
         tk.Toplevel.__init__(self)
-        self.geometry('250x100')
+        self.geometry('250x200')
         self.title("Disciplina")
         self.controle = controle
 
         self.frameNome = tk.Frame(self)
-        self.frameCodigo = tk.Frame(self)
-        self.frameButton = tk.Frame(self)
-        self.frameCodigo.pack()
         self.frameNome.pack()
+        self.frameCod = tk.Frame(self)
+        self.frameCod.pack()
+        self.frameHoras = tk.Frame(self)
+        self.frameHoras.pack()
+        self.frameGrade = tk.Frame(self)
+        self.frameGrade.pack()
+        self.frameButton = tk.Frame(self)
         self.frameButton.pack()
       
-        self.labelCodigo = tk.Label(self.frameCodigo,text="Código: ")
-        self.labelNome = tk.Label(self.frameNome,text="Nome: ")
-        self.labelCodigo.pack(side="left")
+        self.labelNome= tk.Label(self.frameNome,text="Nome:")
         self.labelNome.pack(side="left")  
+        
+        self.labelCod= tk.Label(self.frameCod,text="Codigo:")
+        self.labelCod.pack(side="left")
+        
+        self.labelHoras= tk.Label(self.frameHoras,text="Carga Horaria:")
+        self.labelHoras.pack(side="left")
 
-        self.inputCodigo = tk.Entry(self.frameCodigo, width=20)
-        self.inputCodigo.pack(side="left")
         self.inputNome = tk.Entry(self.frameNome, width=20)
-        self.inputNome.pack(side="left")             
+        self.inputNome.pack(side="left")    
+        
+        self.inputCod = tk.Entry(self.frameCod, width=20)
+        self.inputCod.pack(side="left")
       
-        self.buttonSubmit = tk.Button(self.frameButton ,text="Enter")      
+        self.inputHoras = tk.Entry(self.frameHoras, width=20)
+        self.inputHoras.pack(side="left") 
+        
+        self.labelGrade = tk.Label(self.frameGrade,text="Escolha a grade: ")
+        self.labelGrade.pack(side="left")
+        self.escolhaCombo = tk.StringVar()
+        self.combobox = ttk.Combobox(self.frameGrade, width = 15 , textvariable = self.escolhaCombo)
+        self.combobox.pack(side="left")
+        self.combobox['values'] = listGradesOption
+            
+        self.buttonSubmit = tk.Button(self.frameButton ,text="Criar Disciplina")      
         self.buttonSubmit.pack(side="left")
-        self.buttonSubmit.bind("<Button>", controle.enterHandler)
+        self.buttonSubmit.bind("<Button>", controle.criarDisciplina)
       
         self.buttonClear = tk.Button(self.frameButton ,text="Clear")      
         self.buttonClear.pack(side="left")
         self.buttonClear.bind("<Button>", controle.clearHandler)  
 
-        self.buttonFecha = tk.Button(self.frameButton ,text="Concluído")      
-        self.buttonFecha.pack(side="left")
-        self.buttonFecha.bind("<Button>", controle.fechaHandler)
-
     def mostraJanela(self, titulo, msg):
         messagebox.showinfo(titulo, msg)
-
-class LimiteMostraDisciplinas():
+        
+class LimiteMensagem():
     def __init__(self, str):
-        messagebox.showinfo('Lista de disciplinas', str)
+        messagebox.showinfo('Aluno', str)
 
-      
 class CtrlDisciplina():       
-    def __init__(self):
-        if not os.path.isfile("discplina.pickle"):
-            self.listaDisciplinas =  []
-        else:
-            with open("discplina.pickle", "rb") as f:
-                self.listaDisciplinas = pickle.load(f)
+    def __init__(self, controlePrincipal):
+        self.ctrlPrincipal = controlePrincipal
+        self.listaCursos = []
+        self.listaDisciplinas = []
 
-    def salvaDisciplinas(self):
-        if len(self.listaDisciplinas) != 0:
-            with open("discplina.pickle","wb") as f:
-                pickle.dump(self.listaDisciplinas, f)
-    
-    def getListaDisciplinas(self):
-        return self.listaDisciplinas
+    def insereDisciplina(self):        
+        listGradesOption = self.ctrlPrincipal.ctrlCurso.getListaCodGrades()
+        self.limiteIns = LimiteInsereDisciplina(self, listGradesOption)
 
-    def getDisciplina(self, codDisc):
-        discRet = None
-        for disc in self.listaDisciplinas:
-            if disc.getCodigo() == codDisc:
-                discRet = disc
-        return discRet
-
-    def getListaCodDisciplinas(self):
-        listaCod = []
-        for disc in self.listaDisciplinas:
-            listaCod.append(disc.getCodigo())
-        return listaCod
-
-    def insereDisciplinas(self):
-        self.limiteIns = LimiteInsereDisciplinas(self) 
-
-    def mostraDisciplinas(self):
-        str = 'Código -- Nome\n'
-        for disc in self.listaDisciplinas:
-            str += disc.getCodigo() + ' -- ' + disc.getNome() + '\n'
-        self.limiteLista = LimiteMostraDisciplinas(str)
-
-    def enterHandler(self, event):
-        nroMatric = self.limiteIns.inputCodigo.get()
+    def criarDisciplina(self, event):
         nome = self.limiteIns.inputNome.get()
-        disciplina = Disciplina(nroMatric, nome)
+        cod = self.limiteIns.inputCod.get()
+        horas = self.limiteIns.inputHoras.get()
+        gradeSel = self.limiteIns.escolhaCombo.get()
+        disciplina = Disciplina(cod, nome, horas)
+        self.ctrlPrincipal.ctrlCurso.addMateriaGrade(disciplina, gradeSel)
         self.listaDisciplinas.append(disciplina)
-        self.limiteIns.mostraJanela('Sucesso', 'Disciplina cadastrada com sucesso')
-        self.clearHandler(event)
-
-    def clearHandler(self, event):
-        self.limiteIns.inputCodigo.delete(0, len(self.limiteIns.inputCodigo.get()))
-        self.limiteIns.inputNome.delete(0, len(self.limiteIns.inputNome.get()))
-
-    def fechaHandler(self, event):
+        self.limiteIns.mostraJanela("Disciplina", "Disciplina criada com sucesso!")
         self.limiteIns.destroy()
     
+    def getDisciplinas(self):
+        return self.listaDisciplinas
+    
+    def getDisciplina(self, codigo):
+        for d in self.listaDisciplinas:
+            if d.getCodigo() == codigo:
+                return d
+        return None
+    
+    def getListaCodDisciplinas(self):
+        listaCodDisciplinas = []
+        for d in self.listaDisciplinas:
+            listaCodDisciplinas.append(d.getCodigo())
+        return listaCodDisciplinas
+    
+    def clearHandler(self, event):
+        self.limiteIns.inputNome.delete(0, tk.END)
+        self.limiteIns.inputCod.delete(0, tk.END)
+        self.limiteIns.inputHoras.delete(0, tk.END)

@@ -150,11 +150,14 @@ class CtrlCurso():
     def criaCurso(self, event):
         nome = self.limiteIns.inputNome.get()
         ano = self.limiteIns.inputAno.get()
-        grade = Grade(ano, self.listaDisciplinas)
-        curso = Curso(nome, grade)
-        self.listaCursos.append(curso)
-        self.limiteIns.mostraJanela('Sucesso', 'Estudante cadastrado com sucesso')
-        self.limiteIns.destroy()
+        if nome == "" or ano == "":
+            self.limiteIns.mostraJanela("Erro", "Preencha todos os campos")
+        else:
+            grade = Grade(ano, self.listaDisciplinas)
+            curso = Curso(nome, grade)
+            self.listaCursos.append(curso)
+            self.limiteIns.mostraJanela('Sucesso', 'Estudante cadastrado com sucesso')
+            self.limiteIns.destroy()
     
     def getListaCodCursos(self):
         listaCod = []

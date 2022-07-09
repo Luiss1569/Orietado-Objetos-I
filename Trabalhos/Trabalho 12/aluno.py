@@ -197,12 +197,15 @@ class CtrlAluno():
         nroMatric = self.limiteIns.inputNro.get()
         nome = self.limiteIns.inputNome.get()
         cursoCod = self.limiteIns.escolhaCombo.get()
-        curso = self.ctrlPrincipal.ctrlCurso.getCurso(cursoCod)
-        aluno = Aluno(nroMatric, nome, curso)
-        self.listaAlunos.append(aluno)
-        self.limiteIns.mostraJanela('Sucesso', 'Estudante cadastrado com sucesso')
-        self.clearHandlerIns(event)
-        self.limiteIns.destroy()
+        if nroMatric == '' or nome == '' or cursoCod == '':
+            self.limiteIns.mostraJanela('Erro', 'Preencha todos os campos')
+        else:
+            curso = self.ctrlPrincipal.ctrlCurso.getCurso(cursoCod)
+            aluno = Aluno(nroMatric, nome, curso)
+            self.listaAlunos.append(aluno)
+            self.limiteIns.mostraJanela('Sucesso', 'Estudante cadastrado com sucesso')
+            self.clearHandlerIns(event)
+            self.limiteIns.destroy()
         
     def clearHandlerIns(self, event):
         self.limiteIns.inputNro.delete(0, tk.END)

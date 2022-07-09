@@ -126,26 +126,25 @@ class LimiteConsultaVinho(tk.Toplevel):
         self.title("Vinho")
         self.controle = controle   
 
-        self.tipo = tk.Frame(self)
-        self.variedade = tk.Frame(self)
+        self.frameBotoes = tk.Frame(self)
         self.frameVinhos = tk.Frame(self)
-        self.tipo.pack()
-        self.variedade.pack()
-        self.frameVinhos.pack()
         
-        self.labelTipo = tk.Label(self.tipo, text="Tipo: ")
-        self.labelVariedade = tk.Label(self.variedade, text="Variedade: ")
-        self.labelTipo.pack(side="left")
-        self.labelVariedade.pack(side="left")
+        self.labelTipo = tk.Label(self.frameBotoes, text="Tipo: ")
+        self.labelVariedade = tk.Label(self.frameBotoes, text="Variedade: ")
         self.labelVinhos = tk.Label(self.frameVinhos, text="")
-        self.labelVinhos.pack()
         
-        self.comboTipo = ttk.Combobox(self.tipo, values=listaTipos)
+        self.comboTipo = ttk.Combobox(self.frameBotoes, values=listaTipos)
         self.comboTipo.bind("<<ComboboxSelected>>", controle.exibeTipo)
-        self.comboVariedade = ttk.Combobox(self.variedade, values=listaVariedades)
+        self.comboVariedade = ttk.Combobox(self.frameBotoes, values=listaVariedades)
         self.comboVariedade.bind("<<ComboboxSelected>>", controle.exibeVariedade)
+        
+        self.frameBotoes.pack()
+        self.labelTipo.pack(side="left")
         self.comboTipo.pack(side="left")
+        self.labelVariedade.pack(side="left")
         self.comboVariedade.pack(side="left")
+        self.frameVinhos.pack()
+        self.labelVinhos.pack()
         
         self.comboTipo.current(0)
         self.comboVariedade.current(0)

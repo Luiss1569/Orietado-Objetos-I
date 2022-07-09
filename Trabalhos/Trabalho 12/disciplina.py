@@ -103,11 +103,14 @@ class CtrlDisciplina():
         cod = self.limiteIns.inputCod.get()
         horas = self.limiteIns.inputHoras.get()
         gradeSel = self.limiteIns.escolhaCombo.get()
-        disciplina = Disciplina(cod, nome, horas)
-        self.ctrlPrincipal.ctrlCurso.addMateriaGrade(disciplina, gradeSel)
-        self.listaDisciplinas.append(disciplina)
-        self.limiteIns.mostraJanela("Disciplina", "Disciplina criada com sucesso!")
-        self.limiteIns.destroy()
+        if nome == "" or cod == "" or horas == "":
+            self.limiteIns.mostraJanela("Erro", "Preencha todos os campos")
+        else:
+            disciplina = Disciplina(cod, nome, horas)
+            self.ctrlPrincipal.ctrlCurso.addMateriaGrade(disciplina, gradeSel)
+            self.listaDisciplinas.append(disciplina)
+            self.limiteIns.mostraJanela("Disciplina", "Disciplina criada com sucesso!")
+            self.limiteIns.destroy()
     
     def getDisciplinas(self):
         return self.listaDisciplinas

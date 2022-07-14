@@ -20,6 +20,9 @@ class Artista:
         return self.__musicas
     
     def addAlbum(self, album):
+        for album in self.__albuns:
+            if album.getTitulo() == album.getTitulo():
+                return
         self.__albuns.append(album)
 
     def addMusica(self, musica):
@@ -28,7 +31,7 @@ class Artista:
     def getArtista(self):
         msg = ""
         msg += "Nome: " + self.__nome + "\n"
-        msg += "Albuns: \n"
+        msg += "Albuns:" + str(len(self.getAlbuns())) + " \n"
         for album in self.__albuns:
             msg += album.getAlbum() + "\n"
         return msg

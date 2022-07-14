@@ -61,7 +61,7 @@ class Album:
     def getAlbum(self):
         msg = "Título: " + self.__titulo + "\n"
         msg += "Ano: " + str(self.__ano) + "\n"
-        msg += "Faixas: \n"
+        msg += "Faixas:" + str(len(self.getFaixas())) +"\n"
         for faixa in self.__faixas:
             msg += faixa.getFaixa()
         return msg
@@ -199,7 +199,6 @@ class CtrlAlbum():
         self.limiteInsereAlbum.inputTitulo.delete(0, tk.END)
         self.limiteInsereAlbum.inputAno.delete(0, tk.END)
         self.limiteInsereAlbum.inputArtista.delete(0, tk.END)
-        self.limiteInsereAlbum.inputMusica.delete(0, tk.END)
         self.listaNomesMusica = []
         self.limiteInsereAlbum.labelMusica['text'] = "N° Músicas: 0"
         

@@ -40,7 +40,7 @@ class LimiteInsereCupom(tk.Toplevel):
     def __init__(self, controle, listaCuponsCod):
 
         tk.Toplevel.__init__(self)
-        self.geometry('250x300')
+        self.geometry('250x120')
         self.title("Criação de Album")
         self.controle = controle
 

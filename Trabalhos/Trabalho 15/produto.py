@@ -33,7 +33,7 @@ class LimiteInsereProduto(tk.Toplevel):
     def __init__(self, controle,):
 
         tk.Toplevel.__init__(self)
-        self.geometry('250x300')
+        self.geometry('250x130')
         self.title("Criação de Album")
         self.controle = controle
 
